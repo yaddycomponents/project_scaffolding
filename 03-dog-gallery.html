@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 3: Dog Image Gallery</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 3rem;
+        }
+
+        .controls {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .breed-select-wrapper {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        label {
+            display: block;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        #breed-select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #breed-select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        button {
+            padding: 15px 30px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        #load-more-btn {
+            background: #51cf66;
+        }
+
+        #load-more-btn:hover {
+            background: #40c057;
+        }
+
+        #clear-btn {
+            background: #ff6b6b;
+        }
+
+        #clear-btn:hover {
+            background: #ff5252;
+        }
+
+        .stats {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            color: #667eea;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            color: #666;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        #gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            min-height: 200px;
+        }
+
+        .loading, .error, .empty {
+            grid-column: 1 / -1;
+            background: white;
+            padding: 60px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            color: #ff6b6b;
+        }
+
+        .dog-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .dog-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+
+        .dog-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .dog-info {
+            padding: 20px;
+        }
+
+        .dog-breed {
+            color: #667eea;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-transform: capitalize;
+            margin-bottom: 10px;
+        }
+
+        .dog-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        .favorite-btn {
+            background: #ff6b6b;
+        }
+
+        .favorite-btn:hover {
+            background: #ff5252;
+        }
+
+        .favorite-btn.favorited {
+            background: #51cf66;
+        }
+
+        .favorite-btn.favorited:hover {
+            background: #40c057;
+        }
+
+        /* Lightbox for full image */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lightbox.active {
+            display: flex;
+        }
+
+        .lightbox img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 10px;
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: 20px;
+            right: 40px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🐕 Dog Image Gallery</h1>
+
+        <div class="controls">
+            <div class="breed-select-wrapper">
+                <label for="breed-select">Select Dog Breed:</label>
+                <select id="breed-select">
+                    <option value="random">Random Breed</option>
+                    <!-- Breeds will be loaded here by JavaScript -->
+                </select>
+            </div>
+
+            <div class="button-group">
+                <button id="fetch-btn">Get Dogs</button>
+                <button id="load-more-btn">Load More</button>
+                <button id="clear-btn">Clear Gallery</button>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-item">
+                <div class="stat-value" id="total-images">0</div>
+                <div class="stat-label">Images Loaded</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="total-breeds">0</div>
+                <div class="stat-label">Breeds Available</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="favorites-count">0</div>
+                <div class="stat-label">Favorites</div>
+            </div>
+        </div>
+
+        <div id="gallery">
+            <!-- Dog images will be displayed here -->
+            <div class="empty">
+                <p style="font-size: 1.5rem; color: #999;">
+                    👆 Select a breed and click "Get Dogs" to start!
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox for full image view -->
+    <div class="lightbox" id="lightbox">
+        <span class="lightbox-close">&times;</span>
+        <img id="lightbox-image" src="" alt="Dog">
+    </div>
+
+    <script>
+        // 🎯 YOUR CODE GOES HERE!
+        
+        // API Configuration - FREE, NO API KEY NEEDED!
+        // Dog CEO API: https://dog.ceo/dog-api/
+        const API_BASE = "https://dog.ceo/api";
+        
+        // State
+        let currentBreed = "random";
+        let allDogs = [];
+        let favorites = [];
+
+        // TODO: Write async function to fetch all breeds
+        async function fetchAllBreeds() {
+            // Your code here
+            // Steps:
+            // 1. Fetch from `${API_BASE}/breeds/list/all`
+            // 2. Parse JSON
+            // 3. data.message contains breeds object
+            // 4. Populate the breed dropdown
+            // 5. Update breeds count stat
+            
+            // Example response: { message: { "beagle": [], "husky": [], ... }, status: "success" }
+        }
+
+        // TODO: Write async function to fetch dog images
+        async function fetchDogImages(breed = "random", count = 6) {
+            // Your code here
+            // Steps:
+            // 1. Show loading state
+            // 2. Build API URL based on breed:
+            //    - Random: `${API_BASE}/breeds/image/random/${count}`
+            //    - Specific: `${API_BASE}/breed/${breed}/images/random/${count}`
+            // 3. Fetch data
+            // 4. Parse JSON
+            // 5. data.message is array of image URLs
+            // 6. Add to allDogs array
+            // 7. Call displayDogs()
+            // 8. Handle errors with try/catch
+        }
+
+        // TODO: Write function to display dogs
+        function displayDogs(append = false) {
+            // Your code here
+            // Steps:
+            // 1. Get gallery element
+            // 2. If not append, clear gallery
+            // 3. Map allDogs array to HTML cards
+            // 4. Each card needs:
+            //    - Image
+            //    - Breed name (extract from URL)
+            //    - Favorite button
+            //    - Download button
+            // 5. Update total images stat
+        }
+
+        // TODO: Write function to extract breed from image URL
+        function getBreedFromUrl(url) {
+            // Your code here
+            // URL format: https://images.dog.ceo/breeds/hound-afghan/n02088094_1003.jpg
+            // Extract "hound-afghan" and format as "Afghan Hound"
+        }
+
+        // TODO: Write function to toggle favorite
+        function toggleFavorite(imageUrl) {
+            // Your code here
+            // Steps:
+            // 1. Check if already in favorites array
+            // 2. If yes, remove it
+            // 3. If no, add it
+            // 4. Update favorites count stat
+            // 5. Save to localStorage
+            // 6. Update button appearance
+        }
+
+        // TODO: Write function to download image
+        function downloadImage(imageUrl) {
+            // Your code here
+            // Steps:
+            // 1. Create an <a> element
+            // 2. Set href to imageUrl
+            // 3. Set download attribute
+            // 4. Trigger click
+        }
+
+        // TODO: Write function to open lightbox
+        function openLightbox(imageUrl) {
+            // Your code here
+            // Steps:
+            // 1. Set lightbox image src
+            // 2. Add 'active' class to lightbox
+        }
+
+        // TODO: Write function to close lightbox
+        function closeLightbox() {
+            // Your code here
+        }
+
+        // TODO: Add event listener for breed select change
+        // Your code here
+
+        // TODO: Add event listener for fetch button
+        // Your code here
+
+        // TODO: Add event listener for load more button
+        // Your code here
+
+        // TODO: Add event listener for clear button
+        // Your code here
+
+        // TODO: Add event delegation for card actions (favorite, download, image click)
+        // Your code here
+
+        // TODO: Add event listener for lightbox close
+        // Your code here
+
+        // TODO: Load favorites from localStorage on page load
+        function loadFavorites() {
+            // Your code here
+        }
+
+        // Initialize on page load
+        fetchAllBreeds();
+        loadFavorites();
+    </script>
+</body>
+</html>

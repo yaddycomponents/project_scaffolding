@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 5: Real-time Search Filter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 3rem;
+        }
+
+        .search-section {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        #search-input {
+            width: 100%;
+            padding: 20px;
+            padding-left: 50px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 18px;
+            transition: all 0.3s;
+        }
+
+        #search-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999;
+            font-size: 20px;
+        }
+
+        .search-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+            color: #666;
+        }
+
+        .result-count {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .loading-indicator {
+            color: #667eea;
+            font-style: italic;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 8px 20px;
+            background: #f0f0f0;
+            border: 2px solid transparent;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .filter-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        #users-list {
+            display: grid;
+            gap: 15px;
+        }
+
+        .user-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: all 0.3s;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .user-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
+
+        .user-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 2rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            color: #333;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .user-email {
+            color: #667eea;
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .user-meta {
+            display: flex;
+            gap: 20px;
+            color: #999;
+            font-size: 0.9rem;
+        }
+
+        .user-role {
+            padding: 4px 12px;
+            background: #f0f0f0;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px;
+            background: white;
+            border-radius: 15px;
+            color: #999;
+        }
+
+        .no-results p {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .highlight {
+            background: #ffeb3b;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 User Search</h1>
+
+        <div class="search-section">
+            <div class="search-box">
+                <span class="search-icon">🔍</span>
+                <input 
+                    type="text" 
+                    id="search-input" 
+                    placeholder="Search by name, email, or role..."
+                >
+            </div>
+
+            <div class="search-info">
+                <div>
+                    <span class="result-count" id="result-count">Showing 10 users</span>
+                </div>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-role="all">All</button>
+                    <button class="filter-btn" data-role="developer">Developer</button>
+                    <button class="filter-btn" data-role="designer">Designer</button>
+                    <button class="filter-btn" data-role="manager">Manager</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="users-list">
+            <!-- Users will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        // 🎯 YOUR CODE GOES HERE!
+        
+        // Sample user data
+        const users = [
+            { id: 1, name: "John Doe", email: "john@example.com", role: "developer", department: "Engineering" },
+            { id: 2, name: "Jane Smith", email: "jane@example.com", role: "designer", department: "Design" },
+            { id: 3, name: "Mike Johnson", email: "mike@example.com", role: "developer", department: "Engineering" },
+            { id: 4, name: "Sarah Williams", email: "sarah@example.com", role: "manager", department: "Management" },
+            { id: 5, name: "Tom Brown", email: "tom@example.com", role: "designer", department: "Design" },
+            { id: 6, name: "Emily Davis", email: "emily@example.com", role: "developer", department: "Engineering" },
+            { id: 7, name: "Chris Wilson", email: "chris@example.com", role: "manager", department: "Management" },
+            { id: 8, name: "Lisa Anderson", email: "lisa@example.com", role: "designer", department: "Design" },
+            { id: 9, name: "David Lee", email: "david@example.com", role: "developer", department: "Engineering" },
+            { id: 10, name: "Maria Garcia", email: "maria@example.com", role: "manager", department: "Management" }
+        ];
+
+        // State
+        let searchQuery = "";
+        let selectedRole = "all";
+        let debounceTimer = null;
+
+        // TODO: Write debounce function (Higher-Order Function!)
+        function debounce(func, delay) {
+            // Your code here
+            // Returns a function that delays execution
+        }
+
+        // TODO: Write filter function
+        function filterUsers() {
+            // Your code here
+            // Steps:
+            // 1. Filter by role (if not "all")
+            // 2. Filter by search query (name, email, or role)
+            // 3. Return filtered array
+        }
+
+        // TODO: Write function to highlight search terms
+        function highlightText(text, query) {
+            // Your code here
+            // Replace matching text with <span class="highlight">...</span>
+        }
+
+        // TODO: Write function to display users
+        function displayUsers(usersToDisplay) {
+            // Your code here
+            // Steps:
+            // 1. If no users, show "no results"
+            // 2. Map users to HTML cards
+            // 3. Update #users-list innerHTML
+            // 4. Update result count
+        }
+
+        // TODO: Write function to handle search input
+        function handleSearch(e) {
+            // Your code here
+            // Use debounce to optimize performance
+        }
+
+        // TODO: Add event listener for search input
+        // Use debounce!
+
+        // TODO: Add event listeners for filter buttons
+        // Your code here
+
+        // Initialize: display all users
+        displayUsers(users);
+    </script>
+</body>
+</html>

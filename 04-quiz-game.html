@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 4: Quiz Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .quiz-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 700px;
+        }
+
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+
+        .quiz-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .quiz-info {
+            display: flex;
+            gap: 30px;
+        }
+
+        .info-item {
+            text-align: center;
+        }
+
+        .info-label {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            color: #667eea;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .timer {
+            font-size: 2rem;
+            color: #ff6b6b;
+            font-weight: 700;
+        }
+
+        #quiz-content {
+            min-height: 300px;
+        }
+
+        .question-card {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .question-number {
+            color: #999;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            color: #333;
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: grid;
+            gap: 15px;
+        }
+
+        .option {
+            padding: 20px;
+            background: #f8f9fa;
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1.1rem;
+        }
+
+        .option:hover {
+            background: #e9ecef;
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .option.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .option.correct {
+            background: #51cf66;
+            color: white;
+            border-color: #51cf66;
+        }
+
+        .option.incorrect {
+            background: #ff6b6b;
+            color: white;
+            border-color: #ff6b6b;
+        }
+
+        .option.disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .next-btn {
+            margin-top: 30px;
+            width: 100%;
+            padding: 15px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .next-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .next-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results {
+            text-align: center;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .results h2 {
+            color: #667eea;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .score {
+            font-size: 4rem;
+            color: #51cf66;
+            font-weight: 700;
+            margin: 30px 0;
+        }
+
+        .results p {
+            color: #666;
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .restart-btn {
+            padding: 15px 40px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .restart-btn:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .high-score {
+            margin-top: 30px;
+            padding: 20px;
+            background: #fff3cd;
+            border-radius: 10px;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <h1>🎮 JavaScript Quiz</h1>
+
+        <div class="quiz-header">
+            <div class="quiz-info">
+                <div class="info-item">
+                    <div class="info-label">Question</div>
+                    <div class="info-value" id="question-number">1/5</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Score</div>
+                    <div class="info-value" id="score">0</div>
+                </div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Time</div>
+                <div class="timer" id="timer">30</div>
+            </div>
+        </div>
+
+        <div id="quiz-content">
+            <!-- Quiz questions will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        // 🎯 YOUR CODE GOES HERE!
+        
+        // Quiz data
+        const quizData = [
+            {
+                question: "What does 'const' keyword mean in JavaScript?",
+                options: [
+                    "Creates a constant variable that cannot be reassigned",
+                    "Creates a variable that can be changed anytime",
+                    "Creates a global variable",
+                    "Creates a temporary variable"
+                ],
+                correct: 0
+            },
+            {
+                question: "What is a closure in JavaScript?",
+                options: [
+                    "A way to close the browser",
+                    "A function that has access to its outer scope",
+                    "A method to end a program",
+                    "A type of loop"
+                ],
+                correct: 1
+            },
+            {
+                question: "Which method is used to add an element to the end of an array?",
+                options: [
+                    "shift()",
+                    "unshift()",
+                    "push()",
+                    "pop()"
+                ],
+                correct: 2
+            },
+            {
+                question: "What does 'async/await' do in JavaScript?",
+                options: [
+                    "Makes code run faster",
+                    "Handles asynchronous operations more elegantly",
+                    "Creates animations",
+                    "Validates forms"
+                ],
+                correct: 1
+            },
+            {
+                question: "What is the purpose of 'this' keyword?",
+                options: [
+                    "To create a variable",
+                    "To refer to the current object/context",
+                    "To make a loop",
+                    "To import modules"
+                ],
+                correct: 1
+            }
+        ];
+
+        // Game state
+        let currentQuestion = 0;
+        let score = 0;
+        let timeLeft = 30;
+        let timerInterval = null;
+        let selectedAnswer = null;
+
+        // TODO: Write function to start timer
+        function startTimer() {
+            // Your code here
+            // Use setInterval
+        }
+
+        // TODO: Write function to stop timer
+        function stopTimer() {
+            // Your code here
+            // Use clearInterval
+        }
+
+        // TODO: Write function to display question
+        function displayQuestion() {
+            // Your code here
+        }
+
+        // TODO: Write function to handle option selection
+        function handleOptionClick(optionIndex) {
+            // Your code here
+        }
+
+        // TODO: Write function to check answer
+        function checkAnswer() {
+            // Your code here
+        }
+
+        // TODO: Write function to move to next question
+        function nextQuestion() {
+            // Your code here
+        }
+
+        // TODO: Write function to show results
+        function showResults() {
+            // Your code here
+            // Save high score to localStorage
+        }
+
+        // TODO: Write function to restart quiz
+        function restartQuiz() {
+            // Your code here
+        }
+
+        // TODO: Load high score from localStorage
+        function loadHighScore() {
+            // Your code here
+        }
+
+        // Initialize quiz on page load
+        displayQuestion();
+        startTimer();
+    </script>
+</body>
+</html>
