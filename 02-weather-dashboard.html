@@ -1,269 +1,259 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Project 2: Weather Dashboard</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      :root {
+          /* Color Palette */
+          --color-primary: #667eea;
+          --color-primary-dark: #5568d3;
+          --color-secondary: #764ba2;
+          --color-danger: #ff6b6b;
+          --color-danger-dark: #ff5252;
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+          /* Neutral Colors */
+          --color-white: #ffffff;
+          --color-bg-light: #f3f3f3;
+          --color-bg-lighter: #f0f0f0;
+          --color-border: #e0e0e0;
+          --color-text-primary: #333;
+          --color-text-secondary: #555;
+          --color-text-tertiary: #666;
+          --color-text-muted: #999;
 
-        .weather-app {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            width: 100%;
-            max-width: 500px;
-        }
+          /* Spacing */
+          --spacing-xs: 5px;
+          --spacing-sm: 10px;
+          --spacing-md: 20px;
+          --spacing-lg: 30px;
+          --spacing-xl: 40px;
 
-        h1 {
-            color: #667eea;
-            margin-bottom: 30px;
-            text-align: center;
-            font-size: 2.5rem;
-        }
+          /* Border Radius */
+          --radius-sm: 10px;
+          --radius-md: 50%;
+          --radius-lg: 20px;
 
-        .search {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-        }
+          /* Font Sizes */
+          --font-size-xs: 0.9rem;
+          --font-size-sm: 1.1rem;
+          --font-size-base: 16px;
+          --font-size-md: 1.3rem;
+          --font-size-lg: 1.5rem;
+          --font-size-xl: 2rem;
+          --font-size-2xl: 2.5rem;
+          --font-size-3xl: 4rem;
 
-        #city-input {
-            flex: 1;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-        }
+          /* Shadows */
+          --shadow-card: 0 20px 60px rgba(0, 0, 0, 0.3);
+          --shadow-hover: 0 5px 15px rgba(102, 126, 234, 0.4);
 
-        #city-input:focus {
-            outline: none;
-            border-color: #667eea;
-        }
+          /* Transitions */
+          --transition-base: all 0.3s;
 
-        #search-btn {
-            padding: 15px 30px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
+          /* Sizes */
+          --icon-size: 120px;
+          --spinner-size: 50px;
+          --spinner-border: 4px;
+      }
 
-        #search-btn:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
 
-        #weather-display {
-            min-height: 300px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+      body {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+          min-height: 100vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: var(--spacing-md);
+      }
 
-        .loading {
-            text-align: center;
-            color: #667eea;
-        }
+      .weather-app {
+          background: var(--color-white);
+          padding: var(--spacing-xl);
+          border-radius: var(--radius-lg);
+          box-shadow: var(--shadow-card);
+          width: 100%;
+          max-width: 500px;
+      }
 
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
+      h1 {
+          color: var(--color-primary);
+          margin-bottom: var(--spacing-lg);
+          text-align: center;
+          font-size: var(--font-size-2xl);
+      }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+      .search {
+          display: flex;
+          gap: var(--spacing-sm);
+          margin-bottom: var(--spacing-lg);
+      }
 
-        .error {
-            text-align: center;
-            color: #ff6b6b;
-            padding: 40px;
-        }
+      #city-input {
+          flex: 1;
+          padding: 15px;
+          border: 2px solid var(--color-border);
+          border-radius: var(--radius-sm);
+          font-size: var(--font-size-base);
+      }
 
-        .error p {
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
+      #city-input:focus {
+          outline: none;
+          border-color: var(--color-primary);
+      }
 
-        .error button {
-            background: #ff6b6b;
-        }
+      #search-btn {
+          padding: 15px var(--spacing-lg);
+          background: var(--color-primary);
+          color: var(--color-white);
+          border: none;
+          border-radius: var(--radius-sm);
+          cursor: pointer;
+          font-size: var(--font-size-base);
+          font-weight: 600;
+          transition: var(--transition-base);
+      }
 
-        .error button:hover {
-            background: #ff5252;
-        }
+      #search-btn:hover {
+          background: var(--color-primary-dark);
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-hover);
+      }
 
-        .weather-card {
-            text-align: center;
-            animation: fadeIn 0.5s ease-in;
-        }
+      #weather-display {
+          min-height: 300px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+      }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+      .loading {
+          text-align: center;
+          color: var(--color-primary);
+      }
 
-        .location h2 {
-            color: #333;
-            font-size: 2rem;
-            margin-bottom: 20px;
-        }
+      .spinner {
+          border: var(--spinner-border) solid var(--color-bg-light);
+          border-top: var(--spinner-border) solid var(--color-primary);
+          border-radius: var(--radius-md);
+          width: var(--spinner-size);
+          height: var(--spinner-size);
+          animation: spin 1s linear infinite;
+          margin: 0 auto var(--spacing-md);
+      }
 
-        .weather-icon img {
-            width: 120px;
-            height: 120px;
-        }
+      @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+      }
 
-        .temperature h1 {
-            font-size: 4rem;
-            color: #667eea;
-            margin: 20px 0;
-        }
+      .error {
+          text-align: center;
+          color: var(--color-danger);
+          padding: var(--spacing-xl);
+      }
 
-        .temperature p {
-            color: #666;
-            font-size: 1.1rem;
-            margin-bottom: 10px;
-        }
+      .error p {
+          font-size: 18px;
+          margin-bottom: var(--spacing-md);
+      }
 
-        .description {
-            font-size: 1.3rem;
-            color: #555;
-            margin: 20px 0;
-            text-transform: capitalize;
-        }
+      .error button {
+          background: var(--color-danger);
+      }
 
-        .details {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 2px solid #f0f0f0;
-        }
+      .error button:hover {
+          background: var(--color-danger-dark);
+      }
 
-        .details > div {
-            text-align: center;
-        }
+      .weather-card {
+          text-align: center;
+          animation: fadeIn 0.5s ease-in;
+      }
 
-        .details p:first-child {
-            color: #999;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-        }
+      @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+      }
 
-        .details p:last-child {
-            color: #333;
-            font-size: 1.5rem;
-            font-weight: 600;
-        }
+      .location h2 {
+          color: var(--color-text-primary);
+          font-size: var(--font-size-xl);
+          margin-bottom: var(--spacing-md);
+      }
+
+      .weather-icon img {
+          width: var(--icon-size);
+          height: var(--icon-size);
+      }
+
+      .temperature h1 {
+          font-size: var(--font-size-3xl);
+          color: var(--color-primary);
+          margin: var(--spacing-md) 0;
+      }
+
+      .temperature p {
+          color: var(--color-text-tertiary);
+          font-size: var(--font-size-sm);
+          margin-bottom: var(--spacing-sm);
+      }
+
+      .description {
+          font-size: var(--font-size-md);
+          color: var(--color-text-secondary);
+          margin: var(--spacing-md) 0;
+          text-transform: capitalize;
+      }
+
+      .details {
+          display: flex;
+          justify-content: space-around;
+          margin-top: var(--spacing-lg);
+          padding-top: var(--spacing-lg);
+          border-top: 2px solid var(--color-bg-lighter);
+      }
+
+      .details > div {
+          text-align: center;
+      }
+
+      .details p:first-child {
+          color: var(--color-text-muted);
+          font-size: var(--font-size-xs);
+          margin-bottom: var(--spacing-xs);
+      }
+
+      .details p:last-child {
+          color: var(--color-text-primary);
+          font-size: var(--font-size-lg);
+          font-weight: 600;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="weather-app">
-        <h1>🌤️ Weather Dashboard</h1>
-        
-        <div class="search">
-            <input 
-                type="text" 
-                id="city-input" 
-                placeholder="Enter city name..."
-            >
-            <button id="search-btn">Search</button>
-        </div>
+      <h1>🌤️ Weather Dashboard</h1>
 
-        <div id="weather-display">
-            <!-- Weather data will be displayed here -->
-            <div class="loading">
-                <div class="spinner"></div>
-                <p>Loading weather data...</p>
-            </div>
+      <div class="search">
+        <input type="text" id="city-input" placeholder="Enter city name..." />
+        <button id="search-btn">Search</button>
+      </div>
+
+      <div id="weather-display">
+        <!-- Weather data will be displayed here -->
+        <div class="loading">
+          <div class="spinner"></div>
+          <p>Loading weather data...</p>
         </div>
+      </div>
     </div>
-
-    <script>
-        // 🎯 YOUR CODE GOES HERE!
-        
-        // API Configuration - FREE, NO API KEY NEEDED!
-        // Using Open-Meteo API: https://open-meteo.com/
-        // We'll use geocoding to get coordinates, then get weather
-        const GEO_API = "https://geocoding-api.open-meteo.com/v1/search";
-        const WEATHER_API = "https://api.open-meteo.com/v1/forecast";
-
-        // TODO: Write async function to get coordinates from city name
-        async function getCoordinates(city) {
-            // Your code here
-            // Steps:
-            // 1. Fetch from GEO_API with query parameter
-            // 2. Parse JSON
-            // 3. Return first result's latitude and longitude
-            // Example: const response = await fetch(`${GEO_API}?name=${city}`);
-        }
-
-        // TODO: Write your async function to fetch weather
-        async function fetchWeather(city) {
-            // Your code here
-            // Steps:
-            // 1. Show loading state
-            // 2. Get coordinates using getCoordinates()
-            // 3. Fetch weather data using coordinates
-            // 4. Check if response is ok
-            // 5. Parse JSON
-            // 6. Call displayWeather()
-            // 7. Handle errors with try/catch
-            
-            // Weather API URL format:
-            // `${WEATHER_API}?latitude=${lat}&longitude=${lon}&current_weather=true&temperature_unit=celsius`
-        }
-
-        // TODO: Write function to display weather data
-        function displayWeather(data, cityName) {
-            // Your code here
-            // Steps:
-            // 1. Destructure data from API response
-            // 2. data.current_weather contains: temperature, windspeed, weathercode
-            // 3. Create HTML with weather info
-            // 4. Update #weather-display innerHTML
-            
-            // Weather codes to description:
-            // 0: Clear sky, 1-3: Partly cloudy, 45-48: Foggy, 
-            // 51-67: Rainy, 71-77: Snowy, 80-99: Rain showers
-        }
-
-        // TODO: Add event listener for search button
-        // Your code here
-
-        // TODO: Add event listener for Enter key on input
-        // Your code here
-
-        // TODO: Load default city on page load
-        // fetchWeather("London");
-    </script>
-</body>
+  </body>
 </html>

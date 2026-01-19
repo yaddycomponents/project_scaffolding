@@ -1,455 +1,393 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Project 3: Dog Image Gallery</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      :root {
+          /* Color Palette */
+          --color-primary: #667eea;
+          --color-primary-dark: #5568d3;
+          --color-secondary: #764ba2;
+          --color-success: #51cf66;
+          --color-success-dark: #40c057;
+          --color-danger: #ff6b6b;
+          --color-danger-dark: #ff5252;
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 40px 20px;
-        }
+          /* Neutral Colors */
+          --color-white: #ffffff;
+          --color-bg-light: #f8f9fa;
+          --color-bg-lighter: #f3f3f3;
+          --color-border: #e0e0e0;
+          --color-text-primary: #333;
+          --color-text-secondary: #666;
+          --color-text-muted: #999;
 
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+          /* Spacing */
+          --spacing-xs: 5px;
+          --spacing-sm: 10px;
+          --spacing-md: 15px;
+          --spacing-lg: 20px;
+          --spacing-xl: 30px;
+          --spacing-2xl: 40px;
+          --spacing-3xl: 60px;
 
-        h1 {
-            color: white;
-            text-align: center;
-            margin-bottom: 40px;
-            font-size: 3rem;
-        }
+          /* Border Radius */
+          --radius-sm: 10px;
+          --radius-md: 15px;
+          --radius-lg: 50%;
 
-        .controls {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            margin-bottom: 30px;
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
+          /* Font Sizes */
+          --font-size-xs: 0.9rem;
+          --font-size-sm: 14px;
+          --font-size-base: 16px;
+          --font-size-md: 1.2rem;
+          --font-size-lg: 1.5rem;
+          --font-size-xl: 2rem;
+          --font-size-2xl: 3rem;
+          --font-size-3xl: 40px;
 
-        .breed-select-wrapper {
-            flex: 1;
-            min-width: 250px;
-        }
+          /* Shadows */
+          --shadow-sm: 0 5px 20px rgba(0, 0, 0, 0.1);
+          --shadow-md: 0 10px 40px rgba(0, 0, 0, 0.2);
+          --shadow-lg: 0 15px 40px rgba(0, 0, 0, 0.2);
+          --shadow-hover: 0 5px 15px rgba(102, 126, 234, 0.4);
 
-        label {
-            display: block;
-            color: #666;
-            margin-bottom: 8px;
-            font-weight: 600;
-        }
+          /* Transitions */
+          --transition-base: all 0.3s;
 
-        #breed-select {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 16px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
+          /* Sizes */
+          --image-height: 300px;
+          --spinner-size: 50px;
+          --spinner-border: 4px;
+          --lightbox-bg: rgba(0, 0, 0, 0.9);
 
-        #breed-select:focus {
-            outline: none;
-            border-color: #667eea;
-        }
+          /* Grid */
+          --grid-min-width: 300px;
+          --grid-gap: 20px;
+          --container-max-width: 1200px;
+      }
 
-        .button-group {
-            display: flex;
-            gap: 10px;
-        }
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
 
-        button {
-            padding: 15px 30px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
+      body {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+          min-height: 100vh;
+          padding: var(--spacing-2xl) var(--spacing-lg);
+      }
 
-        button:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
+      .container {
+          max-width: var(--container-max-width);
+          margin: 0 auto;
+      }
 
-        #load-more-btn {
-            background: #51cf66;
-        }
+      h1 {
+          color: var(--color-white);
+          text-align: center;
+          margin-bottom: var(--spacing-2xl);
+          font-size: var(--font-size-2xl);
+      }
 
-        #load-more-btn:hover {
-            background: #40c057;
-        }
+      .controls {
+          background: var(--color-white);
+          padding: var(--spacing-xl);
+          border-radius: var(--radius-md);
+          box-shadow: var(--shadow-md);
+          margin-bottom: var(--spacing-xl);
+          display: flex;
+          gap: var(--spacing-lg);
+          flex-wrap: wrap;
+          align-items: center;
+      }
 
-        #clear-btn {
-            background: #ff6b6b;
-        }
+      .breed-select-wrapper {
+          flex: 1;
+          min-width: 250px;
+      }
 
-        #clear-btn:hover {
-            background: #ff5252;
-        }
+      label {
+          display: block;
+          color: var(--color-text-secondary);
+          margin-bottom: 8px;
+          font-weight: 600;
+      }
 
-        .stats {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            display: flex;
-            gap: 30px;
-            justify-content: center;
-            margin-bottom: 30px;
-        }
+      #breed-select {
+          width: 100%;
+          padding: var(--spacing-md);
+          border: 2px solid var(--color-border);
+          border-radius: var(--radius-sm);
+          font-size: var(--font-size-base);
+          cursor: pointer;
+          transition: var(--transition-base);
+      }
 
-        .stat-item {
-            text-align: center;
-        }
+      #breed-select:focus {
+          outline: none;
+          border-color: var(--color-primary);
+      }
 
-        .stat-value {
-            font-size: 2rem;
-            color: #667eea;
-            font-weight: 700;
-        }
+      .button-group {
+          display: flex;
+          gap: var(--spacing-sm);
+      }
 
-        .stat-label {
-            color: #666;
-            font-size: 0.9rem;
-            margin-top: 5px;
-        }
+      button {
+          padding: var(--spacing-md) var(--spacing-xl);
+          background: var(--color-primary);
+          color: var(--color-white);
+          border: none;
+          border-radius: var(--radius-sm);
+          cursor: pointer;
+          font-size: var(--font-size-base);
+          font-weight: 600;
+          transition: var(--transition-base);
+      }
 
-        #gallery {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
-            min-height: 200px;
-        }
+      button:hover {
+          background: var(--color-primary-dark);
+          transform: translateY(-2px);
+          box-shadow: var(--shadow-hover);
+      }
 
-        .loading, .error, .empty {
-            grid-column: 1 / -1;
-            background: white;
-            padding: 60px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-        }
+      #load-more-btn {
+          background: var(--color-success);
+      }
 
-        .spinner {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #667eea;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
+      #load-more-btn:hover {
+          background: var(--color-success-dark);
+      }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+      #clear-btn {
+          background: var(--color-danger);
+      }
 
-        .error {
-            color: #ff6b6b;
-        }
+      #clear-btn:hover {
+          background: var(--color-danger-dark);
+      }
 
-        .dog-card {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-            animation: fadeIn 0.5s ease-in;
-        }
+      .stats {
+          background: var(--color-bg-light);
+          padding: var(--spacing-md);
+          border-radius: var(--radius-sm);
+          display: flex;
+          gap: var(--spacing-xl);
+          justify-content: center;
+          margin-bottom: var(--spacing-xl);
+      }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
-        }
+      .stat-item {
+          text-align: center;
+      }
 
-        .dog-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-        }
+      .stat-value {
+          font-size: var(--font-size-xl);
+          color: var(--color-primary);
+          font-weight: 700;
+      }
 
-        .dog-image {
-            width: 100%;
-            height: 300px;
-            object-fit: cover;
-            cursor: pointer;
-        }
+      .stat-label {
+          color: var(--color-text-secondary);
+          font-size: var(--font-size-xs);
+          margin-top: var(--spacing-xs);
+      }
 
-        .dog-info {
-            padding: 20px;
-        }
+      #gallery {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(var(--grid-min-width), 1fr));
+          gap: var(--grid-gap);
+          min-height: 200px;
+      }
 
-        .dog-breed {
-            color: #667eea;
-            font-size: 1.2rem;
-            font-weight: 600;
-            text-transform: capitalize;
-            margin-bottom: 10px;
-        }
+      .loading, .error, .empty {
+          grid-column: 1 / -1;
+          background: var(--color-white);
+          padding: var(--spacing-3xl);
+          border-radius: var(--radius-md);
+          text-align: center;
+          box-shadow: var(--shadow-md);
+      }
 
-        .dog-actions {
-            display: flex;
-            gap: 10px;
-            margin-top: 15px;
-        }
+      .spinner {
+          border: var(--spinner-border) solid var(--color-bg-lighter);
+          border-top: var(--spinner-border) solid var(--color-primary);
+          border-radius: var(--radius-lg);
+          width: var(--spinner-size);
+          height: var(--spinner-size);
+          animation: spin 1s linear infinite;
+          margin: 0 auto var(--spacing-lg);
+      }
 
-        .action-btn {
-            flex: 1;
-            padding: 10px;
-            font-size: 14px;
-        }
+      @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+      }
 
-        .favorite-btn {
-            background: #ff6b6b;
-        }
+      .error {
+          color: var(--color-danger);
+      }
 
-        .favorite-btn:hover {
-            background: #ff5252;
-        }
+      .dog-card {
+          background: var(--color-white);
+          border-radius: var(--radius-md);
+          overflow: hidden;
+          box-shadow: var(--shadow-sm);
+          transition: var(--transition-base);
+          animation: fadeIn 0.5s ease-in;
+      }
 
-        .favorite-btn.favorited {
-            background: #51cf66;
-        }
+      @keyframes fadeIn {
+          from {
+              opacity: 0;
+              transform: scale(0.9);
+          }
+          to {
+              opacity: 1;
+              transform: scale(1);
+          }
+      }
 
-        .favorite-btn.favorited:hover {
-            background: #40c057;
-        }
+      .dog-card:hover {
+          transform: translateY(-10px);
+          box-shadow: var(--shadow-lg);
+      }
 
-        /* Lightbox for full image */
-        .lightbox {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
+      .dog-image {
+          width: 100%;
+          height: var(--image-height);
+          object-fit: cover;
+          cursor: pointer;
+      }
 
-        .lightbox.active {
-            display: flex;
-        }
+      .dog-info {
+          padding: var(--spacing-lg);
+      }
 
-        .lightbox img {
-            max-width: 90%;
-            max-height: 90%;
-            border-radius: 10px;
-        }
+      .dog-breed {
+          color: var(--color-primary);
+          font-size: var(--font-size-md);
+          font-weight: 600;
+          text-transform: capitalize;
+          margin-bottom: var(--spacing-sm);
+      }
 
-        .lightbox-close {
-            position: absolute;
-            top: 20px;
-            right: 40px;
-            color: white;
-            font-size: 40px;
-            cursor: pointer;
-        }
+      .dog-actions {
+          display: flex;
+          gap: var(--spacing-sm);
+          margin-top: var(--spacing-md);
+      }
+
+      .action-btn {
+          flex: 1;
+          padding: var(--spacing-sm);
+          font-size: var(--font-size-sm);
+      }
+
+      .favorite-btn {
+          background: var(--color-danger);
+      }
+
+      .favorite-btn:hover {
+          background: var(--color-danger-dark);
+      }
+
+      .favorite-btn.favorited {
+          background: var(--color-success);
+      }
+
+      .favorite-btn.favorited:hover {
+          background: var(--color-success-dark);
+      }
+
+      /* Lightbox for full image */
+      .lightbox {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: var(--lightbox-bg);
+          z-index: 1000;
+          justify-content: center;
+          align-items: center;
+      }
+
+      .lightbox.active {
+          display: flex;
+      }
+
+      .lightbox img {
+          max-width: 90%;
+          max-height: 90%;
+          border-radius: var(--radius-sm);
+      }
+
+      .lightbox-close {
+          position: absolute;
+          top: var(--spacing-lg);
+          right: var(--spacing-2xl);
+          color: var(--color-white);
+          font-size: var(--font-size-3xl);
+          cursor: pointer;
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>🐕 Dog Image Gallery</h1>
+      <h1>🐕 Dog Image Gallery</h1>
 
-        <div class="controls">
-            <div class="breed-select-wrapper">
-                <label for="breed-select">Select Dog Breed:</label>
-                <select id="breed-select">
-                    <option value="random">Random Breed</option>
-                    <!-- Breeds will be loaded here by JavaScript -->
-                </select>
-            </div>
-
-            <div class="button-group">
-                <button id="fetch-btn">Get Dogs</button>
-                <button id="load-more-btn">Load More</button>
-                <button id="clear-btn">Clear Gallery</button>
-            </div>
+      <div class="controls">
+        <div class="breed-select-wrapper">
+          <label for="breed-select">Select Dog Breed:</label>
+          <select id="breed-select">
+            <option value="random">Random Breed</option>
+            <!-- Breeds will be loaded here by JavaScript -->
+          </select>
         </div>
 
-        <div class="stats">
-            <div class="stat-item">
-                <div class="stat-value" id="total-images">0</div>
-                <div class="stat-label">Images Loaded</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="total-breeds">0</div>
-                <div class="stat-label">Breeds Available</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-value" id="favorites-count">0</div>
-                <div class="stat-label">Favorites</div>
-            </div>
+        <div class="button-group">
+          <button id="fetch-btn">Get Dogs</button>
+          <button id="load-more-btn">Load More</button>
+          <button id="clear-btn">Clear Gallery</button>
         </div>
+      </div>
 
-        <div id="gallery">
-            <!-- Dog images will be displayed here -->
-            <div class="empty">
-                <p style="font-size: 1.5rem; color: #999;">
-                    👆 Select a breed and click "Get Dogs" to start!
-                </p>
-            </div>
+      <div class="stats">
+        <div class="stat-item">
+          <div class="stat-value" id="total-images">0</div>
+          <div class="stat-label">Images Loaded</div>
         </div>
+        <div class="stat-item">
+          <div class="stat-value" id="total-breeds">0</div>
+          <div class="stat-label">Breeds Available</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-value" id="favorites-count">0</div>
+          <div class="stat-label">Favorites</div>
+        </div>
+      </div>
+
+      <div id="gallery">
+        <!-- Dog images will be displayed here -->
+        <div class="empty">
+          <p style="font-size: 1.5rem; color: #999;">
+            👆 Select a breed and click "Get Dogs" to start!
+          </p>
+        </div>
+      </div>
     </div>
 
     <!-- Lightbox for full image view -->
     <div class="lightbox" id="lightbox">
-        <span class="lightbox-close">&times;</span>
-        <img id="lightbox-image" src="" alt="Dog">
+      <span class="lightbox-close">&times;</span>
+      <img id="lightbox-image" src="" alt="Dog" />
     </div>
-
-    <script>
-        // 🎯 YOUR CODE GOES HERE!
-        
-        // API Configuration - FREE, NO API KEY NEEDED!
-        // Dog CEO API: https://dog.ceo/dog-api/
-        const API_BASE = "https://dog.ceo/api";
-        
-        // State
-        let currentBreed = "random";
-        let allDogs = [];
-        let favorites = [];
-
-        // TODO: Write async function to fetch all breeds
-        async function fetchAllBreeds() {
-            // Your code here
-            // Steps:
-            // 1. Fetch from `${API_BASE}/breeds/list/all`
-            // 2. Parse JSON
-            // 3. data.message contains breeds object
-            // 4. Populate the breed dropdown
-            // 5. Update breeds count stat
-            
-            // Example response: { message: { "beagle": [], "husky": [], ... }, status: "success" }
-        }
-
-        // TODO: Write async function to fetch dog images
-        async function fetchDogImages(breed = "random", count = 6) {
-            // Your code here
-            // Steps:
-            // 1. Show loading state
-            // 2. Build API URL based on breed:
-            //    - Random: `${API_BASE}/breeds/image/random/${count}`
-            //    - Specific: `${API_BASE}/breed/${breed}/images/random/${count}`
-            // 3. Fetch data
-            // 4. Parse JSON
-            // 5. data.message is array of image URLs
-            // 6. Add to allDogs array
-            // 7. Call displayDogs()
-            // 8. Handle errors with try/catch
-        }
-
-        // TODO: Write function to display dogs
-        function displayDogs(append = false) {
-            // Your code here
-            // Steps:
-            // 1. Get gallery element
-            // 2. If not append, clear gallery
-            // 3. Map allDogs array to HTML cards
-            // 4. Each card needs:
-            //    - Image
-            //    - Breed name (extract from URL)
-            //    - Favorite button
-            //    - Download button
-            // 5. Update total images stat
-        }
-
-        // TODO: Write function to extract breed from image URL
-        function getBreedFromUrl(url) {
-            // Your code here
-            // URL format: https://images.dog.ceo/breeds/hound-afghan/n02088094_1003.jpg
-            // Extract "hound-afghan" and format as "Afghan Hound"
-        }
-
-        // TODO: Write function to toggle favorite
-        function toggleFavorite(imageUrl) {
-            // Your code here
-            // Steps:
-            // 1. Check if already in favorites array
-            // 2. If yes, remove it
-            // 3. If no, add it
-            // 4. Update favorites count stat
-            // 5. Save to localStorage
-            // 6. Update button appearance
-        }
-
-        // TODO: Write function to download image
-        function downloadImage(imageUrl) {
-            // Your code here
-            // Steps:
-            // 1. Create an <a> element
-            // 2. Set href to imageUrl
-            // 3. Set download attribute
-            // 4. Trigger click
-        }
-
-        // TODO: Write function to open lightbox
-        function openLightbox(imageUrl) {
-            // Your code here
-            // Steps:
-            // 1. Set lightbox image src
-            // 2. Add 'active' class to lightbox
-        }
-
-        // TODO: Write function to close lightbox
-        function closeLightbox() {
-            // Your code here
-        }
-
-        // TODO: Add event listener for breed select change
-        // Your code here
-
-        // TODO: Add event listener for fetch button
-        // Your code here
-
-        // TODO: Add event listener for load more button
-        // Your code here
-
-        // TODO: Add event listener for clear button
-        // Your code here
-
-        // TODO: Add event delegation for card actions (favorite, download, image click)
-        // Your code here
-
-        // TODO: Add event listener for lightbox close
-        // Your code here
-
-        // TODO: Load favorites from localStorage on page load
-        function loadFavorites() {
-            // Your code here
-        }
-
-        // Initialize on page load
-        fetchAllBreeds();
-        loadFavorites();
-    </script>
-</body>
+  </body>
 </html>

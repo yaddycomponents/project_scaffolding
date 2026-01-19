@@ -1,364 +1,303 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Project 4: Quiz Game</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      :root {
+          /* Color Palette */
+          --color-primary: #667eea;
+          --color-primary-dark: #5568d3;
+          --color-secondary: #764ba2;
+          --color-success: #51cf66;
+          --color-danger: #ff6b6b;
+          --color-warning: #fff3cd;
+          --color-warning-text: #856404;
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
+          /* Neutral Colors */
+          --color-white: #ffffff;
+          --color-bg-light: #f8f9fa;
+          --color-bg-hover: #e9ecef;
+          --color-border: transparent;
+          --color-disabled: #cccccc;
+          --color-text-primary: #333;
+          --color-text-secondary: #666;
+          --color-text-muted: #999;
 
-        .quiz-container {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            width: 100%;
-            max-width: 700px;
-        }
+          /* Spacing */
+          --spacing-xs: 5px;
+          --spacing-sm: 10px;
+          --spacing-md: 15px;
+          --spacing-lg: 20px;
+          --spacing-xl: 30px;
+          --spacing-2xl: 40px;
 
-        h1 {
-            color: #667eea;
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.5rem;
-        }
+          /* Border Radius */
+          --radius-sm: 10px;
+          --radius-lg: 20px;
 
-        .quiz-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 10px;
-        }
+          /* Font Sizes */
+          --font-size-xs: 0.9rem;
+          --font-size-sm: 1.1rem;
+          --font-size-base: 1.2rem;
+          --font-size-md: 1.5rem;
+          --font-size-lg: 1.8rem;
+          --font-size-xl: 2rem;
+          --font-size-2xl: 2.5rem;
+          --font-size-3xl: 4rem;
 
-        .quiz-info {
-            display: flex;
-            gap: 30px;
-        }
+          /* Shadows */
+          --shadow-card: 0 20px 60px rgba(0, 0, 0, 0.3);
 
-        .info-item {
-            text-align: center;
-        }
+          /* Transitions */
+          --transition-base: all 0.3s;
 
-        .info-label {
-            color: #999;
-            font-size: 0.9rem;
-            margin-bottom: 5px;
-        }
+          /* Layout */
+          --container-max-width: 700px;
+          --content-min-height: 300px;
 
-        .info-value {
-            color: #667eea;
-            font-size: 1.8rem;
-            font-weight: 700;
-        }
+          /* Opacity */
+          --opacity-disabled: 0.7;
+      }
 
-        .timer {
-            font-size: 2rem;
-            color: #ff6b6b;
-            font-weight: 700;
-        }
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
 
-        #quiz-content {
-            min-height: 300px;
-        }
+      body {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+          min-height: 100vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          padding: var(--spacing-lg);
+      }
 
-        .question-card {
-            animation: fadeIn 0.5s ease-in;
-        }
+      .quiz-container {
+          background: var(--color-white);
+          padding: var(--spacing-2xl);
+          border-radius: var(--radius-lg);
+          box-shadow: var(--shadow-card);
+          width: 100%;
+          max-width: var(--container-max-width);
+      }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+      h1 {
+          color: var(--color-primary);
+          text-align: center;
+          margin-bottom: var(--spacing-xl);
+          font-size: var(--font-size-2xl);
+      }
 
-        .question-number {
-            color: #999;
-            font-size: 0.9rem;
-            margin-bottom: 10px;
-        }
+      .quiz-header {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: var(--spacing-xl);
+          padding: var(--spacing-lg);
+          background: var(--color-bg-light);
+          border-radius: var(--radius-sm);
+      }
 
-        .question-text {
-            color: #333;
-            font-size: 1.5rem;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
+      .quiz-info {
+          display: flex;
+          gap: var(--spacing-xl);
+      }
 
-        .options {
-            display: grid;
-            gap: 15px;
-        }
+      .info-item {
+          text-align: center;
+      }
 
-        .option {
-            padding: 20px;
-            background: #f8f9fa;
-            border: 2px solid transparent;
-            border-radius: 10px;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1.1rem;
-        }
+      .info-label {
+          color: var(--color-text-muted);
+          font-size: var(--font-size-xs);
+          margin-bottom: var(--spacing-xs);
+      }
 
-        .option:hover {
-            background: #e9ecef;
-            border-color: #667eea;
-            transform: translateX(5px);
-        }
+      .info-value {
+          color: var(--color-primary);
+          font-size: var(--font-size-lg);
+          font-weight: 700;
+      }
 
-        .option.selected {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
+      .timer {
+          font-size: var(--font-size-xl);
+          color: var(--color-danger);
+          font-weight: 700;
+      }
 
-        .option.correct {
-            background: #51cf66;
-            color: white;
-            border-color: #51cf66;
-        }
+      #quiz-content {
+          min-height: var(--content-min-height);
+      }
 
-        .option.incorrect {
-            background: #ff6b6b;
-            color: white;
-            border-color: #ff6b6b;
-        }
+      .question-card {
+          animation: fadeIn 0.5s ease-in;
+      }
 
-        .option.disabled {
-            pointer-events: none;
-            opacity: 0.7;
-        }
+      @keyframes fadeIn {
+          from { opacity: 0; transform: translateY(20px); }
+          to { opacity: 1; transform: translateY(0); }
+      }
 
-        .next-btn {
-            margin-top: 30px;
-            width: 100%;
-            padding: 15px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
+      .question-number {
+          color: var(--color-text-muted);
+          font-size: var(--font-size-xs);
+          margin-bottom: var(--spacing-sm);
+      }
 
-        .next-btn:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-        }
+      .question-text {
+          color: var(--color-text-primary);
+          font-size: var(--font-size-md);
+          margin-bottom: var(--spacing-xl);
+          line-height: 1.6;
+      }
 
-        .next-btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
+      .options {
+          display: grid;
+          gap: var(--spacing-md);
+      }
 
-        .results {
-            text-align: center;
-            animation: fadeIn 0.5s ease-in;
-        }
+      .option {
+          padding: var(--spacing-lg);
+          background: var(--color-bg-light);
+          border: 2px solid var(--color-border);
+          border-radius: var(--radius-sm);
+          cursor: pointer;
+          transition: var(--transition-base);
+          font-size: var(--font-size-sm);
+      }
 
-        .results h2 {
-            color: #667eea;
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
+      .option:hover {
+          background: var(--color-bg-hover);
+          border-color: var(--color-primary);
+          transform: translateX(5px);
+      }
 
-        .score {
-            font-size: 4rem;
-            color: #51cf66;
-            font-weight: 700;
-            margin: 30px 0;
-        }
+      .option.selected {
+          background: var(--color-primary);
+          color: var(--color-white);
+          border-color: var(--color-primary);
+      }
 
-        .results p {
-            color: #666;
-            font-size: 1.2rem;
-            margin-bottom: 30px;
-        }
+      .option.correct {
+          background: var(--color-success);
+          color: var(--color-white);
+          border-color: var(--color-success);
+      }
 
-        .restart-btn {
-            padding: 15px 40px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
+      .option.incorrect {
+          background: var(--color-danger);
+          color: var(--color-white);
+          border-color: var(--color-danger);
+      }
 
-        .restart-btn:hover {
-            background: #5568d3;
-            transform: translateY(-2px);
-        }
+      .option.disabled {
+          pointer-events: none;
+          opacity: var(--opacity-disabled);
+      }
 
-        .high-score {
-            margin-top: 30px;
-            padding: 20px;
-            background: #fff3cd;
-            border-radius: 10px;
-            color: #856404;
-        }
+      .next-btn {
+          margin-top: var(--spacing-xl);
+          width: 100%;
+          padding: var(--spacing-md);
+          background: var(--color-primary);
+          color: var(--color-white);
+          border: none;
+          border-radius: var(--radius-sm);
+          font-size: var(--font-size-sm);
+          font-weight: 600;
+          cursor: pointer;
+          transition: var(--transition-base);
+      }
+
+      .next-btn:hover {
+          background: var(--color-primary-dark);
+          transform: translateY(-2px);
+      }
+
+      .next-btn:disabled {
+          background: var(--color-disabled);
+          cursor: not-allowed;
+          transform: none;
+      }
+
+      .results {
+          text-align: center;
+          animation: fadeIn 0.5s ease-in;
+      }
+
+      .results h2 {
+          color: var(--color-primary);
+          font-size: var(--font-size-2xl);
+          margin-bottom: var(--spacing-lg);
+      }
+
+      .score {
+          font-size: var(--font-size-3xl);
+          color: var(--color-success);
+          font-weight: 700;
+          margin: var(--spacing-xl) 0;
+      }
+
+      .results p {
+          color: var(--color-text-secondary);
+          font-size: var(--font-size-base);
+          margin-bottom: var(--spacing-xl);
+      }
+
+      .restart-btn {
+          padding: var(--spacing-md) var(--spacing-2xl);
+          background: var(--color-primary);
+          color: var(--color-white);
+          border: none;
+          border-radius: var(--radius-sm);
+          font-size: var(--font-size-sm);
+          font-weight: 600;
+          cursor: pointer;
+          transition: var(--transition-base);
+      }
+
+      .restart-btn:hover {
+          background: var(--color-primary-dark);
+          transform: translateY(-2px);
+      }
+
+      .high-score {
+          margin-top: var(--spacing-xl);
+          padding: var(--spacing-lg);
+          background: var(--color-warning);
+          border-radius: var(--radius-sm);
+          color: var(--color-warning-text);
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="quiz-container">
-        <h1>🎮 JavaScript Quiz</h1>
+      <h1>🎮 JavaScript Quiz</h1>
 
-        <div class="quiz-header">
-            <div class="quiz-info">
-                <div class="info-item">
-                    <div class="info-label">Question</div>
-                    <div class="info-value" id="question-number">1/5</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Score</div>
-                    <div class="info-value" id="score">0</div>
-                </div>
-            </div>
-            <div class="info-item">
-                <div class="info-label">Time</div>
-                <div class="timer" id="timer">30</div>
-            </div>
+      <div class="quiz-header">
+        <div class="quiz-info">
+          <div class="info-item">
+            <div class="info-label">Question</div>
+            <div class="info-value" id="question-number">1/5</div>
+          </div>
+          <div class="info-item">
+            <div class="info-label">Score</div>
+            <div class="info-value" id="score">0</div>
+          </div>
         </div>
+        <div class="info-item">
+          <div class="info-label">Time</div>
+          <div class="timer" id="timer">30</div>
+        </div>
+      </div>
 
-        <div id="quiz-content">
-            <!-- Quiz questions will be displayed here -->
-        </div>
+      <div id="quiz-content">
+        <!-- Quiz questions will be displayed here -->
+      </div>
     </div>
-
-    <script>
-        // 🎯 YOUR CODE GOES HERE!
-        
-        // Quiz data
-        const quizData = [
-            {
-                question: "What does 'const' keyword mean in JavaScript?",
-                options: [
-                    "Creates a constant variable that cannot be reassigned",
-                    "Creates a variable that can be changed anytime",
-                    "Creates a global variable",
-                    "Creates a temporary variable"
-                ],
-                correct: 0
-            },
-            {
-                question: "What is a closure in JavaScript?",
-                options: [
-                    "A way to close the browser",
-                    "A function that has access to its outer scope",
-                    "A method to end a program",
-                    "A type of loop"
-                ],
-                correct: 1
-            },
-            {
-                question: "Which method is used to add an element to the end of an array?",
-                options: [
-                    "shift()",
-                    "unshift()",
-                    "push()",
-                    "pop()"
-                ],
-                correct: 2
-            },
-            {
-                question: "What does 'async/await' do in JavaScript?",
-                options: [
-                    "Makes code run faster",
-                    "Handles asynchronous operations more elegantly",
-                    "Creates animations",
-                    "Validates forms"
-                ],
-                correct: 1
-            },
-            {
-                question: "What is the purpose of 'this' keyword?",
-                options: [
-                    "To create a variable",
-                    "To refer to the current object/context",
-                    "To make a loop",
-                    "To import modules"
-                ],
-                correct: 1
-            }
-        ];
-
-        // Game state
-        let currentQuestion = 0;
-        let score = 0;
-        let timeLeft = 30;
-        let timerInterval = null;
-        let selectedAnswer = null;
-
-        // TODO: Write function to start timer
-        function startTimer() {
-            // Your code here
-            // Use setInterval
-        }
-
-        // TODO: Write function to stop timer
-        function stopTimer() {
-            // Your code here
-            // Use clearInterval
-        }
-
-        // TODO: Write function to display question
-        function displayQuestion() {
-            // Your code here
-        }
-
-        // TODO: Write function to handle option selection
-        function handleOptionClick(optionIndex) {
-            // Your code here
-        }
-
-        // TODO: Write function to check answer
-        function checkAnswer() {
-            // Your code here
-        }
-
-        // TODO: Write function to move to next question
-        function nextQuestion() {
-            // Your code here
-        }
-
-        // TODO: Write function to show results
-        function showResults() {
-            // Your code here
-            // Save high score to localStorage
-        }
-
-        // TODO: Write function to restart quiz
-        function restartQuiz() {
-            // Your code here
-        }
-
-        // TODO: Load high score from localStorage
-        function loadHighScore() {
-            // Your code here
-        }
-
-        // Initialize quiz on page load
-        displayQuestion();
-        startTimer();
-    </script>
-</body>
+  </body>
 </html>

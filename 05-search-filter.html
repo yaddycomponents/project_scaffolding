@@ -1,315 +1,308 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Project 5: Real-time Search Filter</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      :root {
+          /* Color Palette */
+          --color-primary: #667eea;
+          --color-secondary: #764ba2;
+          --color-highlight: #ffeb3b;
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 40px 20px;
-        }
+          /* Neutral Colors */
+          --color-white: #ffffff;
+          --color-bg-light: #f0f0f0;
+          --color-bg-hover: #e0e0e0;
+          --color-border: #e0e0e0;
+          --color-text-primary: #333;
+          --color-text-secondary: #666;
+          --color-text-muted: #999;
 
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
+          /* Spacing */
+          --spacing-xs: 5px;
+          --spacing-sm: 8px;
+          --spacing-md: 10px;
+          --spacing-lg: 15px;
+          --spacing-xl: 20px;
+          --spacing-2xl: 25px;
+          --spacing-3xl: 30px;
+          --spacing-4xl: 40px;
+          --spacing-5xl: 60px;
 
-        h1 {
-            color: white;
-            text-align: center;
-            margin-bottom: 40px;
-            font-size: 3rem;
-        }
+          /* Border Radius */
+          --radius-xs: 3px;
+          --radius-sm: 10px;
+          --radius-md: 15px;
+          --radius-lg: 20px;
+          --radius-full: 50%;
 
-        .search-section {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            margin-bottom: 30px;
-        }
+          /* Font Sizes */
+          --font-size-xs: 0.85rem;
+          --font-size-sm: 0.9rem;
+          --font-size-base: 1rem;
+          --font-size-md: 14px;
+          --font-size-lg: 18px;
+          --font-size-xl: 1.4rem;
+          --font-size-2xl: 1.5rem;
+          --font-size-3xl: 2rem;
+          --font-size-4xl: 3rem;
 
-        .search-box {
-            position: relative;
-        }
+          /* Shadows */
+          --shadow-sm: 0 5px 20px rgba(0, 0, 0, 0.1);
+          --shadow-md: 0 8px 30px rgba(0, 0, 0, 0.15);
+          --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.2);
+          --shadow-focus: 0 0 0 3px rgba(102, 126, 234, 0.1);
 
-        #search-input {
-            width: 100%;
-            padding: 20px;
-            padding-left: 50px;
-            border: 2px solid #e0e0e0;
-            border-radius: 10px;
-            font-size: 18px;
-            transition: all 0.3s;
-        }
+          /* Transitions */
+          --transition-base: all 0.3s;
 
-        #search-input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
+          /* Sizes */
+          --avatar-size: 80px;
+          --search-icon-size: 20px;
+          --search-icon-left: 18px;
 
-        .search-icon {
-            position: absolute;
-            left: 18px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #999;
-            font-size: 20px;
-        }
+          /* Layout */
+          --container-max-width: 900px;
+      }
 
-        .search-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 20px;
-            color: #666;
-        }
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
 
-        .result-count {
-            font-weight: 600;
-            color: #667eea;
-        }
+      body {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+          min-height: 100vh;
+          padding: var(--spacing-4xl) var(--spacing-xl);
+      }
 
-        .loading-indicator {
-            color: #667eea;
-            font-style: italic;
-        }
+      .container {
+          max-width: var(--container-max-width);
+          margin: 0 auto;
+      }
 
-        .filter-buttons {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-        }
+      h1 {
+          color: var(--color-white);
+          text-align: center;
+          margin-bottom: var(--spacing-4xl);
+          font-size: var(--font-size-4xl);
+      }
 
-        .filter-btn {
-            padding: 8px 20px;
-            background: #f0f0f0;
-            border: 2px solid transparent;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.3s;
-        }
+      .search-section {
+          background: var(--color-white);
+          padding: var(--spacing-3xl);
+          border-radius: var(--radius-md);
+          box-shadow: var(--shadow-lg);
+          margin-bottom: var(--spacing-3xl);
+      }
 
-        .filter-btn:hover {
-            background: #e0e0e0;
-        }
+      .search-box {
+          position: relative;
+      }
 
-        .filter-btn.active {
-            background: #667eea;
-            color: white;
-            border-color: #667eea;
-        }
+      #search-input {
+          width: 100%;
+          padding: var(--spacing-xl);
+          padding-left: 50px;
+          border: 2px solid var(--color-border);
+          border-radius: var(--radius-sm);
+          font-size: var(--font-size-lg);
+          transition: var(--transition-base);
+      }
 
-        #users-list {
-            display: grid;
-            gap: 15px;
-        }
+      #search-input:focus {
+          outline: none;
+          border-color: var(--color-primary);
+          box-shadow: var(--shadow-focus);
+      }
 
-        .user-card {
-            background: white;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 20px;
-            transition: all 0.3s;
-            animation: fadeIn 0.5s ease-in;
-        }
+      .search-icon {
+          position: absolute;
+          left: var(--search-icon-left);
+          top: 50%;
+          transform: translateY(-50%);
+          color: var(--color-text-muted);
+          font-size: var(--search-icon-size);
+      }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+      .search-info {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-top: var(--spacing-xl);
+          color: var(--color-text-secondary);
+      }
 
-        .user-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
-        }
+      .result-count {
+          font-weight: 600;
+          color: var(--color-primary);
+      }
 
-        .user-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 2rem;
-            font-weight: 700;
-            flex-shrink: 0;
-        }
+      .loading-indicator {
+          color: var(--color-primary);
+          font-style: italic;
+      }
 
-        .user-info {
-            flex: 1;
-        }
+      .filter-buttons {
+          display: flex;
+          gap: var(--spacing-md);
+          flex-wrap: wrap;
+      }
 
-        .user-name {
-            color: #333;
-            font-size: 1.4rem;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
+      .filter-btn {
+          padding: var(--spacing-sm) var(--spacing-xl);
+          background: var(--color-bg-light);
+          border: 2px solid transparent;
+          border-radius: var(--radius-lg);
+          cursor: pointer;
+          font-size: var(--font-size-md);
+          transition: var(--transition-base);
+      }
 
-        .user-email {
-            color: #667eea;
-            font-size: 1rem;
-            margin-bottom: 8px;
-        }
+      .filter-btn:hover {
+          background: var(--color-bg-hover);
+      }
 
-        .user-meta {
-            display: flex;
-            gap: 20px;
-            color: #999;
-            font-size: 0.9rem;
-        }
+      .filter-btn.active {
+          background: var(--color-primary);
+          color: var(--color-white);
+          border-color: var(--color-primary);
+      }
 
-        .user-role {
-            padding: 4px 12px;
-            background: #f0f0f0;
-            border-radius: 15px;
-            font-size: 0.85rem;
-            color: #666;
-            font-weight: 600;
-        }
+      #users-list {
+          display: grid;
+          gap: var(--spacing-lg);
+      }
 
-        .no-results {
-            text-align: center;
-            padding: 60px;
-            background: white;
-            border-radius: 15px;
-            color: #999;
-        }
+      .user-card {
+          background: var(--color-white);
+          padding: var(--spacing-2xl);
+          border-radius: var(--radius-md);
+          box-shadow: var(--shadow-sm);
+          display: flex;
+          align-items: center;
+          gap: var(--spacing-xl);
+          transition: var(--transition-base);
+          animation: fadeIn 0.5s ease-in;
+      }
 
-        .no-results p {
-            font-size: 1.5rem;
-            margin-bottom: 10px;
-        }
+      @keyframes fadeIn {
+          from {
+              opacity: 0;
+              transform: translateY(10px);
+          }
+          to {
+              opacity: 1;
+              transform: translateY(0);
+          }
+      }
 
-        .highlight {
-            background: #ffeb3b;
-            padding: 2px 4px;
-            border-radius: 3px;
-        }
+      .user-card:hover {
+          transform: translateY(-5px);
+          box-shadow: var(--shadow-md);
+      }
+
+      .user-avatar {
+          width: var(--avatar-size);
+          height: var(--avatar-size);
+          border-radius: var(--radius-full);
+          background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--color-white);
+          font-size: var(--font-size-3xl);
+          font-weight: 700;
+          flex-shrink: 0;
+      }
+
+      .user-info {
+          flex: 1;
+      }
+
+      .user-name {
+          color: var(--color-text-primary);
+          font-size: var(--font-size-xl);
+          font-weight: 600;
+          margin-bottom: var(--spacing-xs);
+      }
+
+      .user-email {
+          color: var(--color-primary);
+          font-size: var(--font-size-base);
+          margin-bottom: var(--spacing-sm);
+      }
+
+      .user-meta {
+          display: flex;
+          gap: var(--spacing-xl);
+          color: var(--color-text-muted);
+          font-size: var(--font-size-sm);
+      }
+
+      .user-role {
+          padding: 4px 12px;
+          background: var(--color-bg-light);
+          border-radius: var(--radius-md);
+          font-size: var(--font-size-xs);
+          color: var(--color-text-secondary);
+          font-weight: 600;
+      }
+
+      .no-results {
+          text-align: center;
+          padding: var(--spacing-5xl);
+          background: var(--color-white);
+          border-radius: var(--radius-md);
+          color: var(--color-text-muted);
+      }
+
+      .no-results p {
+          font-size: var(--font-size-2xl);
+          margin-bottom: var(--spacing-md);
+      }
+
+      .highlight {
+          background: var(--color-highlight);
+          padding: 2px 4px;
+          border-radius: var(--radius-xs);
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="container">
-        <h1>🔍 User Search</h1>
+      <h1>🔍 User Search</h1>
 
-        <div class="search-section">
-            <div class="search-box">
-                <span class="search-icon">🔍</span>
-                <input 
-                    type="text" 
-                    id="search-input" 
-                    placeholder="Search by name, email, or role..."
-                >
-            </div>
-
-            <div class="search-info">
-                <div>
-                    <span class="result-count" id="result-count">Showing 10 users</span>
-                </div>
-                <div class="filter-buttons">
-                    <button class="filter-btn active" data-role="all">All</button>
-                    <button class="filter-btn" data-role="developer">Developer</button>
-                    <button class="filter-btn" data-role="designer">Designer</button>
-                    <button class="filter-btn" data-role="manager">Manager</button>
-                </div>
-            </div>
+      <div class="search-section">
+        <div class="search-box">
+          <span class="search-icon">🔍</span>
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Search by name, email, or role..."
+          />
         </div>
 
-        <div id="users-list">
-            <!-- Users will be displayed here -->
+        <div class="search-info">
+          <div>
+            <span class="result-count" id="result-count">Showing 10 users</span>
+          </div>
+          <div class="filter-buttons">
+            <button class="filter-btn active" data-role="all">All</button>
+            <button class="filter-btn" data-role="developer">Developer</button>
+            <button class="filter-btn" data-role="designer">Designer</button>
+            <button class="filter-btn" data-role="manager">Manager</button>
+          </div>
         </div>
+      </div>
+
+      <div id="users-list">
+        <!-- Users will be displayed here -->
+      </div>
     </div>
-
-    <script>
-        // 🎯 YOUR CODE GOES HERE!
-        
-        // Sample user data
-        const users = [
-            { id: 1, name: "John Doe", email: "john@example.com", role: "developer", department: "Engineering" },
-            { id: 2, name: "Jane Smith", email: "jane@example.com", role: "designer", department: "Design" },
-            { id: 3, name: "Mike Johnson", email: "mike@example.com", role: "developer", department: "Engineering" },
-            { id: 4, name: "Sarah Williams", email: "sarah@example.com", role: "manager", department: "Management" },
-            { id: 5, name: "Tom Brown", email: "tom@example.com", role: "designer", department: "Design" },
-            { id: 6, name: "Emily Davis", email: "emily@example.com", role: "developer", department: "Engineering" },
-            { id: 7, name: "Chris Wilson", email: "chris@example.com", role: "manager", department: "Management" },
-            { id: 8, name: "Lisa Anderson", email: "lisa@example.com", role: "designer", department: "Design" },
-            { id: 9, name: "David Lee", email: "david@example.com", role: "developer", department: "Engineering" },
-            { id: 10, name: "Maria Garcia", email: "maria@example.com", role: "manager", department: "Management" }
-        ];
-
-        // State
-        let searchQuery = "";
-        let selectedRole = "all";
-        let debounceTimer = null;
-
-        // TODO: Write debounce function (Higher-Order Function!)
-        function debounce(func, delay) {
-            // Your code here
-            // Returns a function that delays execution
-        }
-
-        // TODO: Write filter function
-        function filterUsers() {
-            // Your code here
-            // Steps:
-            // 1. Filter by role (if not "all")
-            // 2. Filter by search query (name, email, or role)
-            // 3. Return filtered array
-        }
-
-        // TODO: Write function to highlight search terms
-        function highlightText(text, query) {
-            // Your code here
-            // Replace matching text with <span class="highlight">...</span>
-        }
-
-        // TODO: Write function to display users
-        function displayUsers(usersToDisplay) {
-            // Your code here
-            // Steps:
-            // 1. If no users, show "no results"
-            // 2. Map users to HTML cards
-            // 3. Update #users-list innerHTML
-            // 4. Update result count
-        }
-
-        // TODO: Write function to handle search input
-        function handleSearch(e) {
-            // Your code here
-            // Use debounce to optimize performance
-        }
-
-        // TODO: Add event listener for search input
-        // Use debounce!
-
-        // TODO: Add event listeners for filter buttons
-        // Your code here
-
-        // Initialize: display all users
-        displayUsers(users);
-    </script>
-</body>
+  </body>
 </html>
